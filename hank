@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>櫻花作品集 | Sakura Portfolio</title>
+    <!-- 引入日系風優雅字型 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;900&family=Zen+Maru+Gothic:wght@500;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* ==========================================
+           1. 櫻花和風主題配色設定 (Sakura Theme)
+           ========================================== */
+        :root {
+            --bg-color: #fcf6f7;          /* 櫻花淡粉白背景 */
+            --card-bg: rgba(255, 255, 255, 0.85); /* 半透明玻璃質感 */
+            --text-main: #3d3135;         /* 暗木褐文字 */
+            --text-sub: #8c7379;          /* 淡紫灰 */
+            --sakura-pink: #ffb7c5;       /* 櫻花粉 */
+            --sakura-accent: #e06d88;     /* 櫻紅點綴色 */
+            --sakura-gradient: linear-gradient(135deg, #ffc0cb 0%, #e06d88 100%);
+            --locked-bg: #ece5e7;         /* 灰色鎖定背景 */
+            --locked-text: #a89a9e;       /* 灰字 */
+            --shadow: 0 10px 25px -5px rgba(224, 109, 136, 0.12);
+            --shadow-hover: 0 15px 30px -5px rgba(224, 109, 136, 0.35);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Zen Maru Gothic', 'Noto Serif JP', serif, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            overflow-x: hidden;
+            position: relative;
+            /* 微妙的日式和紙漸層背景 */
+            background-image: 
+                radial-gradient(#f3d7df 1px, transparent 1px),
+                linear-gradient(to bottom, #fff8f9, #fbeef1);
+            background-size: 24px 24px, 100% 100%;
+        }
+
+        /* 飄落櫻花容器 */
+        .sakura-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        /* 櫻花花瓣樣式 */
+        .petal {
+            position: absolute;
+            background: linear-gradient(135deg, #ffc0cb, #ffb3c1);
+            border-radius: 150% 0 150% 150%;
+            opacity: 0.7;
+            pointer-events: none;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% {
+                top: -10%;
+                transform: translateX(0) rotate(0deg);
+                opacity: 0.8;
+            }
+            100% {
+                top: 105%;
+                transform: translateX(100px) rotate(360deg);
+                opacity: 0.2;
+            }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 960px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 1; /* 確保內容在櫻花飄落背景之上 */
+        }
+
+        /* ==========================================
+           2. 中央個人資訊卡片 (Profile Header)
+           ========================================== */
+        .profile-card {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        /* 大頭貼櫻花外框 */
+        .avatar-wrapper {
+            position: relative;
+            width: 125px;
+            height: 125px;
+            margin: 0 auto 16px;
+        }
+
+        .avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #ffffff;
+            box-shadow: var(--shadow);
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .avatar-wrapper:hover .avatar {
+            transform: scale(1.08) rotate(6deg);
+        }
+
+        /* 粉紅旋轉光暈環 */
+        .avatar-wrapper::after {
+            content: '';
+            position: absolute;
+            top: -6px;
+            left: -6px;
+            right: -6px;
+            bottom: -6px;
+            border: 2px dashed var(--sakura-accent);
+            border-radius: 50%;
+            animation: rotateRing 25s linear infinite;
+            opacity: 0.6;
+        }
+
+        @keyframes rotateRing {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .profile-name {
+            font-family: 'Noto Serif JP', serif;
+            font-size: 1.85rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            color: var(--text-main);
+            margin-bottom: 6px;
+        }
+
+        .profile-subtitle {
+            font-size: 0.95rem;
+            color: var(--text-sub);
+            letter-spacing: 1.5px;
+        }
+
+        .profile-subtitle::before,
+        .profile-subtitle::after {
+            content: ' 🌸 ';
+            font-size: 0.8rem;
+        }
+
+        /* ==========================================
+           3. 16宮格按鈕區域 (Grid Layout)
+           ========================================== */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            width: 100%;
+        }
+
+        /* 按鈕基本樣式 */
+        .btn {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 15px;
+            background: var(--card-bg);
+            backdrop-filter: blur(5px);
+            border-radius: 16px;
+            text-decoration: none;
+            color: var(--text-main);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            cursor: pointer;
+            min-height: 105px;
+        }
+
+        .btn-week {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--sakura-accent);
+            margin-bottom: 6px;
+        }
+
+        .btn-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-align: center;
+            line-height: 1.4;
+            z-index: 1;
+        }
+
+        /* ==========================================
+           4. 櫻花懸停動畫 (Hover Effect) 與鎖定狀態
+           ========================================== */
+
+        /* 【已解鎖按鈕 - 櫻花粉漸層 Hover 效果】 */
+        .btn.unlocked:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--sakura-pink);
+            color: #ffffff;
+        }
+
+        .btn.unlocked:hover .btn-week {
+            color: #fff0f3;
+        }
+
+        /* 櫻花瓣浪潮滑入效果 */
+        .btn.unlocked::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--sakura-gradient);
+            border-radius: 16px;
+            transform: translateY(100%);
+            transition: transform 0.4s ease-out;
+            z-index: 0;
+        }
+
+        .btn.unlocked:hover::before {
+            transform: translateY(0);
+        }
+
+        .btn.unlocked * {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 【未解鎖按鈕 - 灰色遊戲關卡】 */
+        .btn.locked {
+            background-color: var(--locked-bg);
+            color: var(--locked-text);
+            cursor: not-allowed;
+            box-shadow: none;
+            border: 1px dashed #d5cbcf;
+        }
+
+        .btn.locked .btn-week {
+            color: var(--locked-text);
+        }
+
+        .btn.locked .lock-icon {
+            font-size: 1.2rem;
+            margin-bottom: 4px;
+            opacity: 0.6;
+        }
+
+        /* 滑鼠移到未解鎖關卡時震動反饋 */
+        .btn.locked:hover {
+            animation: shake 0.4s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-4px); }
+            40% { transform: translateX(4px); }
+            60% { transform: translateX(-2px); }
+            80% { transform: translateX(2px); }
+        }
+
+        /* ==========================================
+           5. RWD 響應式佈局
+           ========================================== */
+        @media (max-width: 868px) {
+            .grid-container {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .grid-container {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+            .btn {
+                padding: 16px 10px;
+                min-height: 95px;
+            }
+            .profile-name {
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .grid-container {
+                grid-template-columns: repeat(1, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 櫻花飄落特效容器 -->
+    <div class="sakura-container" id="sakura"></div>
+
+    <div class="container">
+        <!-- 頁首：個人大頭貼與名字 -->
+        <header class="profile-card">
+            <div class="avatar-wrapper">
+                <!-- 預設假圖片，之後可自行替換 -->
+                <img class="avatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=SakuraPortfolio" alt="個人大頭貼">
+            </div>
+            <h1 class="profile-name">網頁設計作品集</h1>
+            <p class="profile-subtitle">SAKURA PORTFOLIO</p>
+        </header>
+
+        <!-- 主體：16 個作品任務選單 -->
+        <main class="grid-container">
+            
+            <!-- 按鈕 1 (已解鎖) -->
+            <a href="w1/index.html" class="btn unlocked">
+                <span class="btn-week">STAGE 01</span>
+                <span class="btn-title">Week 1-數位名片</span>
+            </a>
+
+            <!-- 按鈕 2 (已解鎖) -->
+            <a href="w2/index.html" class="btn unlocked">
+                <span class="btn-week">STAGE 02</span>
+                <span class="btn-title">Week 2-今天吃甚麼？</span>
+            </a>
+
+            <!-- 按鈕 3 ~ 16 (未解鎖) -->
+            <div class="btn locked"><span class="lock-icon">🔒</span><span class="btn-week">STAGE 03</span><span class="btn-title">未解鎖關卡</span></div>
+            <div class="btn locked"><span class="lock-icon">🔒</span><span class="btn-week">STAGE 04</span><span class="btn-title">未解鎖關卡</span></div>
+            <div class="btn locked"><span class="lock-icon">🔒</span><span class="btn-week">STAGE 05</span><span class="btn-title">未解鎖關卡</span></div>
+            <div class="btn locked"><span class="lock-icon">🔒</span><span class="btn-week">STAGE 06</span><span class="btn-title">未解鎖關卡</span></div>
+            <div class="btn locked"><span class="lock-icon">🔒</span><span class="btn-week">STAGE 07</span><span class="btn-title">未解鎖關卡</span></div>
+            <div class="btn locked"><span class="lock-icon">🔒</span><span class="btn-week">STAGE 08</span><span class="btn-title">未解鎖關卡</span></div>
+            <div class="btn locked"><span class="lock-icon">🔒</span><span class="btn-week">STAGE 09</span><span class="btn-title">未解鎖關卡</span></div>
+            <div class="btn locked"><span class="lock-icon">🔒</span><span class="btn-week">STAGE 10</span><span class="btn-title">未解鎖關卡</span></div>
+            <div class="btn locked"><span class="lock-icon">🔒</span><span class="btn-week">STAGE 11</span><span class="btn-title">未解鎖關卡</span></div>
+            <div class="btn locked"><span class="lock-icon">🔒</span><span class="btn-week">STAGE 12</span><span class="btn-title">未解鎖關卡</span></div>
+            <div class="btn locked"><span class="lock-icon">🔒</span><span class="btn-week">STAGE 13</span><span class="btn-title">未解鎖關卡</span></div>
+            <div class="btn locked"><span class="lock-icon">🔒</span><span class="btn-week">STAGE 14</span><span class="btn-title">未解鎖關卡</span></div>
+            <div class="btn locked"><span class="lock-icon">🔒</span><span class="btn-week">STAGE 15</span><span class="btn-title">未解鎖關卡</span></div>
+            <div class="btn locked"><span class="lock-icon">🔒</span><span class="btn-week">STAGE 16</span><span class="btn-title">未解鎖關卡</span></div>
+
+        </main>
+    </div>
+
+    <!-- 動態生成櫻花花瓣效果 Script -->
+    <script>
+        function createSakura() {
+            const container = document.getElementById('sakura');
+            const petalCount = 20; // 畫面上花瓣數量
+
+            for (let i = 0; i < petalCount; i++) {
+                const petal = document.createElement('div');
+                petal.classList.add('petal');
+                
+                // 隨機尺寸
+                const size = Math.random() * 10 + 8;
+                petal.style.width = `${size}px`;
+                petal.style.height = `${size * 1.4}px`;
+                
+                // 隨機位置與動畫時間
+                petal.style.left = `${Math.random() * 100}%`;
+                petal.style.animationDuration = `${Math.random() * 5 + 6}s`;
+                petal.style.animationDelay = `${Math.random() * 5}s`;
+                
+                container.appendChild(petal);
+            }
+        }
+
+        // 初始化櫻花動畫
+        document.addEventListener('DOMContentLoaded', createSakura);
+    </script>
+
+</body>
+</html>
